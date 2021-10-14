@@ -10,8 +10,22 @@
     <p>
       You're alive! Congratulations. Write your thank you note here:
     </p>
-    <textarea name="name" rows="8" cols="80">
-      Thank you for your blood. I want more of it.
-    </textarea>
+    <textarea id="message" rows="8" cols="80">Thank you for your blood. I want more of it.</textarea>
+    <br>
+    <button type="button" id="sendThanks">Say Thanks</button>
+    <script type="text/javascript">
+      sendThanks.onclick = async () => {
+        try {
+          const response = await fetch('/.netlify/functions/sayThanks', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: message.value, id: location.hash.slice(1) })
+         });
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+    </script>
   </body>
 </html>

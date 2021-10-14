@@ -11,6 +11,34 @@
       Thanks forgiving blood! Once you've given your blood, press the "create code" button and print the QR code so
       your recipient can write you a note.
     </p>
-    <button type="button" name="button">Make QR Code</button>
+    <label for="email">Email:</label>
+    <input id="emailInput" type="email">
+    <button id="makeCodeBtn" type="button">Make QR Code</button>
+
+    <div id="qrcode"></div>
+    <a id="urlLink"></a>
+    <script type="text/javascript">
+      makeCodeBtn.onclick = async () => {
+        try {
+          const response = await fetch('/.netlify/functions/createCode', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: emailInput.value })
+         });
+          const body = await response.json();
+          setQrFromCode(body.code)
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      function setQrFromCode(code) {
+        const url = `${location.origin}/recipient#${code}`;
+        new QRCode(document.getElementById("qrcode"), url);
+        urlLink.innerText = url;
+        urlLink.href = url;
+      }
+    </script>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
   </body>
 </html>
